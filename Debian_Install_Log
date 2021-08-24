@@ -1,6 +1,7 @@
 RedmiBook pro 15 
 
-1) Only avaliable for Debian11
+1) Only avaliable for Debian11, for 3K display set scale to 200% in Display setting
+   Remember to set /etc/apt/source.list to china source for fast download.
 
 2) Wireless Network  (RTK 8852AE) using driver https://github.com/lwfinger/rtw89 suppose > kernel 5.4 but tested ok with 5.1 in Debian11
 
@@ -11,3 +12,9 @@ RedmiBook pro 15
 4) Use ibus to install chinese 
 
 5) Install battery function TLP - Optimize Linux Laptop Battery Life call "TLP start" ,Seems set in initr
+
+6）Install Python with venv
+      python -m venv $PathWithNewEnv
+      source $PathWithNewEnv/bin/activate
+      
+   
