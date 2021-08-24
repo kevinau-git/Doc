@@ -1,0 +1,13 @@
+RedmiBook pro 15 
+
+1) Only avaliable for Debian11
+
+2) Wireless Network  (RTK 8852AE) using driver https://github.com/lwfinger/rtw89 suppose > kernel 5.4 but tested ok with 5.1 in Debian11
+
+3) Display driver install with Debian internal amd driver package "apt search --names-only firm|grep amd" 
+   ,Note only able to change display frame not resoultion so far
+   ,In case of wrong resoultion set then use command line go to ~/.config/ reset the display setting.Setting avalid by account . also can create a new user to login 
+
+4) Use ibus to install chinese 
+
+5) Install battery function TLP - Optimize Linux Laptop Battery Life call "TLP start" ,Seems set in initr
