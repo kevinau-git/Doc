@@ -1,13 +1,23 @@
 RedmiBook pro 15 
-
+Preparation 
+   1) cp DebianXXX.iso to usb 
+         check which /dev device for usb
+         unmount all mount point which on usb device
+         cp DebianXXX.iso to usb
+   2) Reactivate the unused space for usb
+         fdisk /dev/XXX for creating a new partition 
+         mkfs.XXX with new partition on USB device
+         
+         
+Installation
 1) Only avaliable for Debian11, for 3K display set scale to 200% in Display setting
    Remember to set /etc/apt/source.list to china source for fast download.
 
-2) Wireless Network  (RTK 8852AE) using driver https://github.com/lwfinger/rtw89 suppose > kernel 5.4 but tested ok with 5.1 in Debian11
+2) Wireless Network  (RTK 8852AE) use driver https://github.com/lwfinger/rtw89 suppose > kernel 5.4 but tested ok with 5.1 in Debian11
 
-3) Display driver install with Debian internal amd driver package "apt search --names-only firm|grep amd" 
-   ,Note only able to change display frame not resoultion so far
-   ,In case of wrong resoultion set then use command line go to ~/.config/ reset the display setting.Setting avalid by account . also can create a new user to login 
+3) Display driver can be installed with Debian internal amd driver package "apt search --names-only firm|grep amd" 
+   ,Note only able to change display refresh frame not resoultion so far
+   ,In case of wrong resoultion set then use command line go to ~/.config/ reset the display setting.Setting is avalid by account only. also can create a new user to login 
 
 4) Use ibus to install chinese 
 
