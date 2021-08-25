@@ -27,4 +27,31 @@ Installation
       python -m venv $PathWithNewEnv
       source $PathWithNewEnv/bin/activate
       
+7) set bluetooth
+   Open /etc/systemd/system/bluetooth.target.wants/bluetooth.service
+   Change:
+
+   ExecStart=/usr/lib/bluetooth/bluetoothd
+   To
+
+   ExecStart=/usr/lib/bluetooth/bluetoothd --noplugin=sap
+   Reload the systemd:
+
+   $ sudo systemctl daemon-reload
+   Restart the bluetooth:
+
+   $ sudo service bluetooth restart
+   Get the bluetooth status:
+
+   $ sudo service bluetooth status
+
+
+   bluetooth.service - Bluetooth service
+      Loaded: loaded (/lib/systemd/system/bluetooth.service; enabled)
+      Active: active (running) since Sat 2016-04-30 10:38:46 UTC; 6s ago
+        Docs: man:bluetoothd(8)
+    Main PID: 12775 (bluetoothd)
+      Status: "Running"
+      CGroup: /system.slice/bluetooth.service
+              └─12775 /usr/lib/bluetooth/bluetoothd --noplugin=sap
    
