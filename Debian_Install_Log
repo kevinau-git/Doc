@@ -11,6 +11,7 @@ Preparation
          
 Installation
 1) Only avaliable for Debian11, for 3K display set scale to 200% in Display setting
+   Install the the debian 's amd gpu firmware . apt search --names-only firm |grep amd
    Remember to set /etc/apt/source.list to china source for fast download.
 
 2) Wireless Network  (RTK 8852AE) use driver https://github.com/lwfinger/rtw89 suppose > kernel 5.4 but tested ok with 5.1 in Debian11
@@ -22,36 +23,16 @@ Installation
 4) Use ibus to install chinese 
 
 5) Install battery function TLP - Optimize Linux Laptop Battery Life call "TLP start" ,Seems set in initr
-
+     Set cpu freq under the /etc/tlp.conf
+         CPU_SCALING_MIN_FREQ_ON_AC=0
+         CPU_SCALING_MAX_FREQ_ON_AC=9999999
+         CPU_SCALING_MIN_FREQ_ON_BAT=0
+         CPU_SCALING_MAX_FREQ_ON_BAT=9999999
+     execute command "sudo tlp bat" or "sudo tlp AC" to activate
+     it can check the /proc/cpuinfo see if cpu freq set or use tlp-stat -p for checking setting is avaliable or not.
+     
 6）Install Python with venv
       python -m venv $PathWithNewEnv
       source $PathWithNewEnv/bin/activate
       
-7) set bluetooth
-   Open /etc/systemd/system/bluetooth.target.wants/bluetooth.service
-   Change:
-
-   ExecStart=/usr/lib/bluetooth/bluetoothd
-   To
-
-   ExecStart=/usr/lib/bluetooth/bluetoothd --noplugin=sap
-   Reload the systemd:
-
-   $ sudo systemctl daemon-reload
-   Restart the bluetooth:
-
-   $ sudo service bluetooth restart
-   Get the bluetooth status:
-
-   $ sudo service bluetooth status
-
-
-   bluetooth.service - Bluetooth service
-      Loaded: loaded (/lib/systemd/system/bluetooth.service; enabled)
-      Active: active (running) since Sat 2016-04-30 10:38:46 UTC; 6s ago
-        Docs: man:bluetoothd(8)
-    Main PID: 12775 (bluetoothd)
-      Status: "Running"
-      CGroup: /system.slice/bluetooth.service
-              └─12775 /usr/lib/bluetooth/bluetoothd --noplugin=sap
-   
+      
