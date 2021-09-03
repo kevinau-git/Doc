@@ -82,3 +82,11 @@ vgmapr-hdsinput     0.00     0.00   46.08  108.23     2.26     5.79   106.95    
 Device:         rrqm/s   wrqm/s     r/s     w/s    rMB/s    wMB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
 vgmapr-hdsdata     0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00
 vgmapr-hdsinput     0.00     0.00    0.00   37.50     0.00    13.85   756.48     0.17    4.47    0.00    4.47   3.48  13.05
+
+###------Check kworker
+$ echo workqueue:workqueue_queue_work > /sys/kernel/debug/tracing/set_event
+$ cat /sys/kernel/debug/tracing/trace_pipe > out.txt
+(wait a few secs)
+
+
+cat /proc/THE_OFFENDING_KWORKER/stack
