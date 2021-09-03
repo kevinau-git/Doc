@@ -1,0 +1,6 @@
+
+--- Pip Download with other platform
+pip download --platform manylinux1_x86_64 --only-binary=:all: --no-binary=:none:  --dest ./wheelhouse -r req.txt --no-deps
+
+
+pip install juptyer --no-index --find-links ./ 
