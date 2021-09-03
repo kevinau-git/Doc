@@ -1,0 +1,84 @@
+#---The issue present like load average go high . Kworker process occupy alots of cpu Too many sleep task.
+#---Deeply like process busy with cpu switch in and out but doesn't run very.
+#---only when job run hanppen .Even a single mv command under same mount point cause load average high 
+#---Kernel keep show soft lockup . CPU stuck with memory page switch (Redhat said)
+Message from syslogd@XXXX at Sep  3 09:46:28 ...
+kernel:NMI watchdog: BUG: soft lockup - CPU#58 stuck for 23s! [systemd:1]
+
+
+#------OS occur a kernel bug which io mem cpu idle is normal. but everything slow.
+#------Something bi(block device in/out) raise high----
+#------ cs seems too high 
+
+cmd>>>>vmstat 1 10
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+15  1 166712 30090448   3120 492313472    0    0   378   708    3    3 26 20 54  0  0
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+15  0 166712 29120512   3120 493294816    0    0   378   708    3    3 26 20 54  0  0
+16  0 166712 28901208   3120 493517152    0    0 43504     0 46981 32046 19 28 52  0  0
+18  0 166712 28693564   3120 493723296    0    0 39560 146766 49018 34255 19 30 50  0  0
+15  0 166712 28466152   3120 493954784    0    0 43950     0 48409 35914 19 27 54  0  0
+16  0 166712 28224740   3120 494193984    0    0 47648 56296 48143 36278 19 26 54  0  0
+13  1 166712 28027532   3120 494393536    0    0 38382 118724 47699 33385 19 27 53  0  0
+22  0 166712 27914856   3120 494471648    0    0  6672   857 50765 37821 26 26 48  0  0
+
+#------ top command show load average high . But mem cpu task low.
+cmd>>> top 
+top - 21:04:48 up 1 day,  4:56,  7 users,  load average: 85.07, 94.91, 90.31
+Tasks: 1411 total,  23 running, 1384 sleeping,   3 stopped,   1 zombie
+%Cpu(s): 18.4 us, 28.3 sy,  0.0 ni, 49.1 id,  0.2 wa,  0.0 hi,  4.0 si,  0.0 st
+KiB Mem : 52805894+total, 82789728 free,  5617260 used, 43965196+buff/cache
+KiB Swap: 16777212 total, 16610484 free,   166728 used. 51813171+avail Mem
+ 
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                                               
+65229 root      20   0       0      0      0 R  62.7  0.0   7:57.13 kworker/32:0                                                                                          
+65334 root      20   0       0      0      0 R  61.8  0.0  19:53.47 kworker/39:2                                                                                          
+55045 root      20   0       0      0      0 R  61.2  0.0   9:39.45 kworker/42:0                                                                                          
+27780 root      20   0       0      0      0 R  60.6  0.0   4:12.61 kworker/47:0                                                                                          
+35658 root      20   0       0      0      0 R  60.6  0.0   0:17.37 kworker/43:1                                                                                          
+24029 root      20   0       0      0      0 S  60.4  0.0   5:56.00 kworker/41:2      
+
+#------- ps command check running task can use uniq -c for sum group 
+ps -eo s,user,cmd|grep ^[RD]|sort|uniq -c
+R XXXX   ps -eo s,user,cmd
+
+#-----Sar found %system runs high periodically, Sar also can review the past performance with /var/log/sa/saXX =>XX means day of month
+ /app/XXXX/log [568]> sar 1 10
+Linux 3.10.0-693.el7.x86_64 ()       09/03/2021      _x86_64_        (64 CPU)
+
+09:38:13 AM     CPU     %user     %nice   %system   %iowait    %steal     %idle
+09:38:14 AM     all      8.10      0.00     67.75      0.00      0.00     24.16
+09:38:15 AM     all      9.45      0.00     65.53      0.00      0.00     25.02
+09:38:16 AM     all      9.18      0.00     65.79      0.00      0.00     25.04
+09:38:17 AM     all      8.56      0.00     67.09      0.00      0.00     24.35
+
+sar -f /var/log/sa/sa10
+Linux 3.10.0-693.el7.x86_64 ()       08/10/2021      _x86_64_        (64 CPU)
+12:00:01 AM     CPU     %user     %nice   %system   %iowait    %steal     %idle
+12:10:01 AM     all      7.18      0.00      1.62      0.01      0.00     91.19
+12:20:01 AM     all      7.83      0.00      1.26      0.00      0.00     90.90
+12:30:01 AM     all      7.99      0.00      1.36      0.00      0.00     90.65
+12:40:01 AM     all      7.77      0.00      1.37      0.00      0.00     90.86
+12:50:01 AM     all      7.68      0.00      1.23      0.00      0.00     91.09
+01:00:01 AM     all      6.39      0.00      1.39      0.00      0.00     92.22
+
+
+#------df -i /dev/#### checking inode seems normal
+#------following command for using check io
+echo "Detailed Inode usage for: $(pwd)" ; for d in `find -maxdepth 1 -type d |cut -d\/ -f2 |grep -xv . |sort`; do c=$(find $d |wc -l) ; printf "$c\t\t- $d\n" ; done ; printf "Total: \t\t$(find $(pwd) | wc -l)\n"
+
+
+#----- iostat showing disk no to high , Suppose r/w_await not over 2 s for too long. ,%util means pcentage of use
+iostat -N  -xm -d  2 10 vgmapr-hdsdata vgmapr-hdsinput
+
+Linux 3.10.0-693.el7.x86_64 ()     09/03/2021      _x86_64_        (64 CPU)
+
+Device:         rrqm/s   wrqm/s     r/s     w/s    rMB/s    wMB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+vgmapr-hdsdata     0.00     0.00   44.66   28.56     4.09    12.61   467.00     0.61    8.32    0.79   20.10   0.54   3.98
+vgmapr-hdsinput     0.00     0.00   46.08  108.23     2.26     5.79   106.95     0.39    2.53    1.02    3.18   0.36   5.58
+
+Device:         rrqm/s   wrqm/s     r/s     w/s    rMB/s    wMB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+vgmapr-hdsdata     0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00
+vgmapr-hdsinput     0.00     0.00    0.00   37.50     0.00    13.85   756.48     0.17    4.47    0.00    4.47   3.48  13.05
