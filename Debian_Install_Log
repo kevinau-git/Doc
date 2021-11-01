@@ -15,6 +15,7 @@ Installation
    Remember to set /etc/apt/source.list to china source for fast download.
 
 2) Wireless Network  (RTK 8852AE) use driver https://github.com/lwfinger/rtw89 suppose > kernel 5.4 but tested ok with 5.1 in Debian11
+   modprobe enable rtw89
 
 3) Display driver can be installed with Debian internal amd driver package "apt search --names-only firm|grep amd" 
    ,Note only able to change display refresh frame not resoultion so far
@@ -35,4 +36,8 @@ Installation
       python -m venv $PathWithNewEnv
       source $PathWithNewEnv/bin/activate
       
-      
+7) edit pm setting for fixing suspend unable to awake issue
+      vi /etc/pm/config.d/local 
+      add folowing setting for pm override 
+         ADD_PARAMETERS="--quirk-s3-mode --quirk-s3-bios --quirk-vga-mode-3 --quirk-radeon-off"
+
