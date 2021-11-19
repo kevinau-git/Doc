@@ -36,6 +36,13 @@ Installation
       python -m venv $PathWithNewEnv
       source $PathWithNewEnv/bin/activate
       
+6.1) Install Python with offical tgz file
+      Unzip the file 
+      ./configure --prefix /opt/pythonXX --with-ssl
+      make install
+      ### set alternatives ###
+      update-alternatives --install /usr/bin/python python /opt/python38/bin/python3.8 1
+      
 7) edit pm setting for fixing suspend unable to awake issue
       vi /etc/pm/config.d/local 
       add folowing setting for pm override 
