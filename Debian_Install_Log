@@ -38,7 +38,9 @@ Installation
       
 6.1) Install Python with offical tgz file
       Unzip the file 
-      ./configure --prefix /opt/pythonXX --with-ssl
+      
+      ./configure --prefix=/opt/python38 --enable-optimizations
+
       make install
       ### set alternatives ###
       update-alternatives --install /usr/bin/python python /opt/python38/bin/python3.8 1
