@@ -3,7 +3,7 @@ import sys
 import time
 
 c = KafkaConsumer(
-     bootstrap_servers= 'apmaprdev01:9092,apmaprdev01:9093'
+     bootstrap_servers= 'host1:9092,host2:9093'
     ,group_id='GRP_KE1'
     ,enable_auto_commit =False
     ,auto_offset_reset ='earliest'
