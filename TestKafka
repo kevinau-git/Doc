@@ -1,0 +1,62 @@
+from kafka import KafkaConsumer
+import sys
+import time
+
+c = KafkaConsumer(
+     bootstrap_servers= 'apmaprdev01:9092,apmaprdev01:9093'
+    ,group_id='GRP_KE1'
+    ,enable_auto_commit =False
+    ,auto_offset_reset ='earliest'
+    ,max_poll_records = 3000
+    ,client_id ="clent_ID_test2.py"
+    ,fetch_min_bytes = 1024*1024*1
+#    ,fetch_max_bytes = 52428800
+#    ,receive_buffer_bytes = 20480000
+#    ,send_buffer_bytes = 20480000
+    ,max_partition_fetch_bytes = 1024*1024*1
+    ,fetch_max_wait_ms  = 20000
+    )
+
+print("start")
+if not c.bootstrap_connected :
+    print ("error")
+c.subscribe(['TEST_TOPIC'])
+cnt =0
+# for message in c:
+#     # message value and key are raw bytes -- decode if necessary!
+#     # e.g., for unicode: `message.value.decode('utf-8')`
+#     print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
+#                                           message.offset, message.key,
+#                                           message.value))
+
+# print(c.metrics)
+
+stime = time.time()
+print("-----Start the consumer-----"+ str(stime))
+poll_cnt = 0
+rcnt=0
+break_flg=0
+while  (1==1 ):
+    print("poll cnt :"+str(poll_cnt) + "--rcnt:"+str(rcnt) + "-----time:"+str(time.time()))
+    poll_cnt = poll_cnt + 1
+    msg = c.poll(timeout_ms=10000)
+    if poll_cnt == 1 :
+       print("--------the first poll -----"+ str(stime))
+       stime = time.time()
+    for msgtext in msg.values():
+        for f in msgtext:
+            rcnt = rcnt + 1
+            if rcnt >= 1500000 :
+               print(f)
+               break_flg=1
+               break
+        if break_flg == 1:
+           break
+    e_etime=time.time()
+    c.commit_async()
+    if break_flg == 1:
+       break
+print("poll cnt :"+str(poll_cnt) + "--rcnt:"+str(rcnt))
+etime = time.time()
+print("-----End the consumer-----"+ str(etime) + "-----"+ str(etime - stime))
+c.close()
