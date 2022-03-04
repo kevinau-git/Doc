@@ -1,0 +1,8 @@
+----Clean-----
+mvn clean
+
+----Compile-----
+mvn compile
+
+----Copy Dependency jar to specify lib -----
+mvn dependency:copy-dependencies -DoutputDirectory=lib
